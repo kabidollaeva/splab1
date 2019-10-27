@@ -6,4 +6,6 @@
 
 # here comes your solution
 # e.g.
-cut -d' ' -f1 $2 | head -$1 | cat -n
+file=$2
+n=$1
+sed 's/^.* - - \[.\] "." [0-9][0-9]* \([-0-9][0-9]\) "." "\(.*\)"$/\1 \2/' $file | awk '{cnt[$2]+=$1}END{for (x in cnt){printf("%s %d\n", x, cnt[x])}}' | sort -r -n -k2 | head -n $n | awk '{cnt[$1]=$2;sum+=$2;}END{for (x in cnt){printf("%s %d %.1f%%\n", x, cnt[x], cnt[x]/sum*100)}}' | sort -r -n -k2 | awk '{printf("%s - %d - %.1f%%\n"), $1, $2, $3}' | awk '{printf("%d. %s\n", NR, $0)}'
